@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Admin Dashboard</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_staff|default:"0" }}</h5>
+                        <p class="card-text">Total Staff Members</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {% if today_plan %}
+                                {{ today_plan.tasks.count|default:"0" }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </h5>
+                        <p class="card-text">Today's Tasks</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ upcoming_plans.count|default:"0" }}</h5>
+                        <p class="card-text">Upcoming Plans</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recent_plans.count|default:"0" }}</h5>
+                        <p class="card-text">Recent Plans</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Today's Plan</h5>
+                <span class="badge bg-primary">{{ today|date:"F d, Y" }}</span>
+            </div>
+            <div class="card-body">
+                {% if today_plan %}
+                    <p><strong>Date:</strong> {{ today_plan.date }}</p>
+                    <p><strong>Total Tasks:</strong> {{ today_plan.tasks.count }}</p>
+                    <a href="{% url 'plan_detail' today_plan.id %}" class="btn btn-primary">View Plan</a>
+                {% else %}
+                    <p>No plan created for today.</p>
+                    <a href="{% url 'plan_create' %}" class="btn btn-success">Create Today's Plan</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upcoming Plans</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_plans %}
+                    <ul class="list-group">
+                        {% for plan in upcoming_plans %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ plan.date }}
+                                <a href="{% url 'plan_detail' plan.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No upcoming plans.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Staff Members</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Date Joined</th>
+                                <th>Tasks Today</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_users %}
+                                <tr>
+                                    <td>{{ staff.username }}</td>
+                                    <td>{{ staff.email }}</td>
+                                    <td>{{ staff.date_joined|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% if today_plan %}
+                                            {{ today_plan.tasks.filter|length }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No staff members found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Task - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Update Task: {{ task.name }}</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Admin Note:</strong> {{ task.admin_note|default:"No admin note provided" }}</p>
+                <hr>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {% for error in field.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                    <a href="{% url 'staff_plan_detail' task.plan.id %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add Bootstrap classes to form fields
+        const select = document.querySelector('#id_status');
+        if (select) {
+            select.classList.add('form-select');
+        }
+        
+        const textarea = document.querySelector('#id_staff_note');
+        if (textarea) {
+            textarea.classList.add('form-control');
+        }
+    });
+</script>
+{% endblock %}

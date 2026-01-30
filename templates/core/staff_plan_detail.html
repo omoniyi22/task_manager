@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Plan Details - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Plan for {{ plan.date }}</h2>
+    <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">My Tasks in this Plan</h5>
+    </div>
+    <div class="card-body">
+        {% if tasks %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Admin Note</th>
+                            <th>My Note</th>
+                            <th>Status</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                            <tr>
+                                <td>{{ task.name }}</td>
+                                <td>{{ task.admin_note|default:"-" }}</td>
+                                <td>{{ task.staff_note|default:"-" }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ task.status }}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ task.updated_at|date:"M d, H:i" }}</td>
+                                <td>
+                                    <a href="{% url 'update_task' task.id %}" class="btn btn-sm btn-primary">Update</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center">No tasks assigned to you in this plan.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
