@@ -45,10 +45,11 @@ def user_login(request):
             return render(request, 'registration/login.html', {'error': 'Invalid credentials'})
     return render(request, 'registration/login.html')
 
+
+
+
 @login_required
 @user_passes_test(is_admin)
-
-
 def admin_dashboard(request):
     today = timezone.now().date()
     

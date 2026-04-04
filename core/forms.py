@@ -44,3 +44,4 @@ class StaffTaskUpdateForm(forms.ModelForm):
         widgets = {
             'staff_note': forms.Textarea(attrs={'rows': 3}),
         }
+        
